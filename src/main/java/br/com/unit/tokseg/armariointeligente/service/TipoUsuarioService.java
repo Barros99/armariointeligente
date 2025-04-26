@@ -10,14 +10,11 @@ import java.util.Optional;
 
 @Service
 public class TipoUsuarioService {
-
     @Autowired
     private TipoUsuarioRepository tipoUsuarioRepository;
 
-
     @Transactional
     public TipoUsuario criarTipoUsuario(TipoUsuario tipoUsuario) {
-
         if (tipoUsuario == null) {
             throw new IllegalArgumentException("O tipo de usuário não pode ser nulo");
         }
@@ -43,24 +40,37 @@ public class TipoUsuarioService {
     }
 
     @Transactional
-    public TipoUsuario atualizarTipoUsuario(TipoUsuario tipoUsuario) {
-        tipoUsuario.setNome(tipoUsuario.getNome());
-        tipoUsuario.setDescricao(tipoUsuario.getDescricao());
+    public TipoUsuario atualizarTipoUsuario(Long id, TipoUsuario tipoUsuario) {
+        TipoUsuario tipoExistente = tipoUsuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tipo de usuário não encontrado"));
 
-        return tipoUsuarioRepository.save(tipoUsuario);
+        // Verifica se o novo nome já existe para outro tipo de usuário
+        if (tipoUsuario.getNome() != null && !tipoUsuario.getNome().isEmpty()) {
+            Optional<TipoUsuario> tipoComMesmoNome =
+                    tipoUsuarioRepository.findByNome(tipoUsuario.getNome());
+            if (tipoComMesmoNome.isPresent() && !tipoComMesmoNome.get().getId().equals(id)) {
+                throw new RuntimeException("Já existe um tipo de usuário com este nome");
+            }
+            tipoExistente.setNome(tipoUsuario.getNome());
+        }
 
+        if (tipoUsuario.getDescricao() != null) {
+            tipoExistente.setDescricao(tipoUsuario.getDescricao());
+        }
+
+        return tipoUsuarioRepository.save(tipoExistente);
     }
 
     @Transactional
     public void deletarTipoUsuario(Long id) {
-        try {
-            if (!tipoUsuarioRepository.existsById(id)) {
-                throw new RuntimeException("Tipo de usuário não encontrado");
-            }
-            tipoUsuarioRepository.deleteById(id);
-            tipoUsuarioRepository.flush();
-        } catch (Exception e) {
-            throw new RuntimeException("Erro ao deletar tipo de usuário: " + e.getMessage());
+        TipoUsuario tipoUsuario = tipoUsuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tipo de usuário não encontrado"));
+
+        if (!tipoUsuario.getUsuarios().isEmpty()) {
+            throw new RuntimeException(
+                    "Não é possível excluir este tipo de usuário pois existem usuários vinculados a ele");
         }
+
+        tipoUsuarioRepository.deleteById(id);
     }
 }
