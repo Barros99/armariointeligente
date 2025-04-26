@@ -1,0 +1,114 @@
+### Variáveis globais
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### ==================== TIPOS DE USUÁRIO ====================
+
+### Listar todos os tipos de usuário
+GET {{baseUrl}}/api/v1/tipos-usuarios
+Accept: {{contentType}}
+
+### Buscar tipo de usuário por ID
+GET {{baseUrl}}/api/v1/tipos-usuarios/1
+Accept: {{contentType}}
+
+### Criar novo tipo de usuário
+POST {{baseUrl}}/api/v1/tipos-usuarios
+Content-Type: {{contentType}}
+
+{
+  "nome": "PORTEIRO",
+  "descricao": "Funcionário responsável pela portaria do condomínio"
+}
+
+### Atualizar tipo de usuário
+PUT {{baseUrl}}/api/v1/tipos-usuarios/4
+Content-Type: {{contentType}}
+
+{
+  "nome": "PORTEIRO",
+  "descricao": "Funcionário responsável pelo controle de acesso e recebimento de encomendas"
+}
+
+### Excluir tipo de usuário
+DELETE {{baseUrl}}/api/v1/tipos-usuarios/4
+
+### ==================== USUÁRIOS ====================
+
+### Listar todos os usuários
+GET {{baseUrl}}/api/v1/usuarios
+Accept: {{contentType}}
+
+### Buscar usuário por ID
+GET {{baseUrl}}/api/v1/usuarios/1
+Accept: {{contentType}}
+
+### Criar novo usuário
+POST {{baseUrl}}/api/v1/usuarios
+Content-Type: {{contentType}}
+
+{
+  "nome": "Maria Oliveira",
+  "email": "JKJK.oliveirA@exemplo.com",
+  "senha": "senha123",
+  "telefone": "(11) 97777-8888",
+  "tipoUsuario": {
+    "id": 1
+  }
+}
+
+### Atualizar usuário
+PUT {{baseUrl}}/api/v1/usuarios/1
+Content-Type: {{contentType}}
+
+{
+  "nome": "Maria Oliveira Silva",
+  "email": "maria.oliveira@exemplo.com",
+  "telefone": "(11) 97777-9999",
+  "senha": "senha123",
+  "tipoUsuario": {
+    "id": 1
+  }
+}
+
+### Excluir usuário
+DELETE {{baseUrl}}/api/v1/usuarios/1
+
+### ==================== EXEMPLOS ADICIONAIS ====================
+
+### Criar usuário com tipo Cliente
+POST {{baseUrl}}/api/v1/usuarios
+Content-Type: {{contentType}}
+
+{
+  "nome": "João Silva",
+  "email": "joao.silva@exemplo.com",
+  "senha": "senha456",
+  "telefone": "(11) 98888-7777",
+  "tipoUsuario": {
+    "id": 2
+  }
+}
+
+### Criar usuário com tipo Funcionário
+POST {{baseUrl}}/api/v1/usuarios
+Content-Type: {{contentType}}
+
+{
+  "nome": "Carlos Pereira",
+  "email": "carlos.pereira@exemplo.com",
+  "senha": "senha789",
+  "telefone": "(11) 96666-5555",
+  "tipoUsuario": {
+    "id": 3
+  }
+}
+
+### Criar novo tipo de usuário - Gerente
+POST {{baseUrl}}/api/v1/tipos-usuarios
+Content-Type: {{contentType}}
+
+{
+  "nome": "GERENTE",
+  "descricao": "Gerente com acesso administrativo ao sistema"
+}
