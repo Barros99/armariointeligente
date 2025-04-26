@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import br.com.unit.tokseg.armariointeligente.exception.ResourceNotFoundException;
 import br.com.unit.tokseg.armariointeligente.model.Usuario;
 import br.com.unit.tokseg.armariointeligente.service.UsuarioService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,54 +24,34 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<?> criarUsuario(@RequestBody Usuario usuario) {
-        try {
-            Usuario novoUsuario = usuarioService.criarUsuario(usuario);
-            return ResponseEntity.ok(novoUsuario);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Usuario novoUsuario = usuarioService.criarUsuario(usuario);
+        return ResponseEntity.ok(novoUsuario);
     }
 
     @GetMapping
     public ResponseEntity<?> listarUsuarios() {
-        try {
-            return ResponseEntity.ok(usuarioService.listarUsuarios());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(usuarioService.listarUsuarios());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarUsuarioPorId(@PathVariable Long id) {
-        try {
-            Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
-            if (usuario.isPresent()) {
-                return ResponseEntity.ok(usuario.get());
-            } else {
-                return ResponseEntity.status(404).body("Usuário não encontrado com o ID: " + id);
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+        Optional<Usuario> usuario = usuarioService.buscarUsuarioPorId(id);
+        if (usuario.isPresent()) {
+            return ResponseEntity.ok(usuario.get());
+        } else {
+            throw new ResourceNotFoundException("Usuário", "id", id);
         }
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
-        try {
-            Usuario usuarioAtualizado = usuarioService.atualizarUsuario(id, usuario);
-            return ResponseEntity.ok(usuarioAtualizado);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        Usuario usuarioAtualizado = usuarioService.atualizarUsuario(id, usuario);
+        return ResponseEntity.ok(usuarioAtualizado);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletarUsuario(@PathVariable Long id) {
-        try {
-            usuarioService.deletarUsuario(id);
-            return ResponseEntity.noContent().build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        usuarioService.deletarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
 }
