@@ -17,21 +17,21 @@ POST {{baseUrl}}/api/v1/tipos-usuarios
 Content-Type: {{contentType}}
 
 {
-  "nome": "PORTEIRO",
+  "nome": "Porteiro",
   "descricao": "Funcionário responsável pela portaria do condomínio"
 }
 
 ### Atualizar tipo de usuário
-PUT {{baseUrl}}/api/v1/tipos-usuarios/4
+PUT {{baseUrl}}/api/v1/tipos-usuarios/5
 Content-Type: {{contentType}}
 
 {
-  "nome": "PORTEIRO",
+  "nome": "Porteiro",
   "descricao": "Funcionário responsável pelo controle de acesso e recebimento de encomendas"
 }
 
 ### Excluir tipo de usuário
-DELETE {{baseUrl}}/api/v1/tipos-usuarios/4
+DELETE {{baseUrl}}/api/v1/tipos-usuarios/5
 
 ### ==================== USUÁRIOS ====================
 
@@ -48,8 +48,8 @@ POST {{baseUrl}}/api/v1/usuarios
 Content-Type: {{contentType}}
 
 {
-  "nome": "Maria Oliveira",
-  "email": "JKJK.oliveirA@exemplo.com",
+  "nome": "Maria Oliveira Silva",
+  "email": "maria.silva@exemplo.com",
   "senha": "senha123",
   "telefone": "(11) 97777-8888",
   "tipoUsuario": {
@@ -58,12 +58,12 @@ Content-Type: {{contentType}}
 }
 
 ### Atualizar usuário
-PUT {{baseUrl}}/api/v1/usuarios/1
+PUT {{baseUrl}}/api/v1/usuarios/4
 Content-Type: {{contentType}}
 
 {
   "nome": "Maria Oliveira Silva",
-  "email": "maria.oliveira@exemplo.com",
+  "email": "maria.silva@exemplo.com",
   "telefone": "(11) 97777-9999",
   "senha": "senha123",
   "tipoUsuario": {
@@ -72,12 +72,12 @@ Content-Type: {{contentType}}
 }
 
 ### Excluir usuário
-DELETE {{baseUrl}}/api/v1/usuarios/1
+DELETE {{baseUrl}}/api/v1/usuarios/4
 
 ### ==================== EXEMPLOS ADICIONAIS ====================
 
-### Criar usuário com tipo Cliente
-POST {{baseUrl}}/api/v1/usuarios
+### atualizar usuário com tipo Cliente
+PUT {{baseUrl}}/api/v1/usuarios/2
 Content-Type: {{contentType}}
 
 {
