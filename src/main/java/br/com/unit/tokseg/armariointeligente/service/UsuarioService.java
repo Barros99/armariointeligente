@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import br.com.unit.tokseg.armariointeligente.exception.BadRequestException;
+import br.com.unit.tokseg.armariointeligente.exception.ResourceAlreadyExistsException;
+import br.com.unit.tokseg.armariointeligente.exception.ResourceNotFoundException;
 import br.com.unit.tokseg.armariointeligente.model.TipoUsuario;
 import br.com.unit.tokseg.armariointeligente.model.Usuario;
 import br.com.unit.tokseg.armariointeligente.repository.TipoUsuarioRepository;
@@ -22,25 +25,26 @@ public class UsuarioService {
     @Transactional
     public Usuario criarUsuario(Usuario usuario) {
         if (usuario == null) {
-            throw new IllegalArgumentException("Usuário não pode ser nulo");
+            throw new BadRequestException("Usuário não pode ser nulo");
         }
         if (usuario.getEmail() == null || usuario.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Email não pode ser nulo ou vazio");
+            throw new BadRequestException("Email não pode ser nulo ou vazio");
         }
         if (usuario.getSenha() == null || usuario.getSenha().isEmpty()) {
-            throw new IllegalArgumentException("Senha não pode ser nula ou vazia");
+            throw new BadRequestException("Senha não pode ser nula ou vazia");
         }
 
         if (usuarioRepository.findByEmail(usuario.getEmail()).isPresent()) {
-            throw new RuntimeException("Email já cadastrado");
+            throw new ResourceAlreadyExistsException("Usuário", "email", usuario.getEmail());
         }
 
         if (usuario.getTipoUsuario() == null || usuario.getTipoUsuario().getId() == null) {
-            throw new IllegalArgumentException("Tipo de usuário é obrigatório");
+            throw new BadRequestException("Tipo de usuário é obrigatório");
         }
 
         TipoUsuario tipoUsuario = tipoUsuarioRepository.findById(usuario.getTipoUsuario().getId())
-                .orElseThrow(() -> new RuntimeException("Tipo de usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Tipo de usuário", "id",
+                        usuario.getTipoUsuario().getId()));
 
         usuario.setTipoUsuario(tipoUsuario);
         return usuarioRepository.save(usuario);
@@ -59,7 +63,7 @@ public class UsuarioService {
     @Transactional
     public Usuario atualizarUsuario(Long id, Usuario usuario) {
         Usuario usuarioExistente = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+                .orElseThrow(() -> new ResourceNotFoundException("Usuário", "id", id));
 
         // Verifica se o email já está em uso por outro usuário
         if (usuario.getEmail() != null && !usuario.getEmail().isEmpty()) {
@@ -67,7 +71,7 @@ public class UsuarioService {
                     usuarioRepository.findByEmail(usuario.getEmail());
             if (usuarioComMesmoEmail.isPresent()
                     && !usuarioComMesmoEmail.get().getId().equals(id)) {
-                throw new RuntimeException("Email já está em uso por outro usuário");
+                throw new ResourceAlreadyExistsException("Usuário", "email", usuario.getEmail());
             }
             usuarioExistente.setEmail(usuario.getEmail());
         }
@@ -75,8 +79,9 @@ public class UsuarioService {
         // Atualiza o tipo de usuário se fornecido
         if (usuario.getTipoUsuario() != null && usuario.getTipoUsuario().getId() != null) {
             TipoUsuario tipoUsuario =
-                    tipoUsuarioRepository.findById(usuario.getTipoUsuario().getId()).orElseThrow(
-                            () -> new RuntimeException("Tipo de usuário não encontrado"));
+                    tipoUsuarioRepository.findById(usuario.getTipoUsuario().getId())
+                            .orElseThrow(() -> new ResourceNotFoundException("Tipo de usuário",
+                                    "id", usuario.getTipoUsuario().getId()));
             usuarioExistente.setTipoUsuario(tipoUsuario);
         }
 
@@ -99,7 +104,7 @@ public class UsuarioService {
     @Transactional
     public void deletarUsuario(Long id) {
         if (!usuarioRepository.existsById(id)) {
-            throw new RuntimeException("Usuário não encontrado");
+            throw new ResourceNotFoundException("Usuário", "id", id);
         }
         usuarioRepository.deleteById(id);
     }
