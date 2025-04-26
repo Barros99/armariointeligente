@@ -1,5 +1,6 @@
 package br.com.unit.tokseg.armariointeligente.controller;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,9 +45,13 @@ public class TipoUsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarTipoUsuarioPorId(@PathVariable Long id) {
         try {
-            TipoUsuario tipoUsuario = tipoUsuarioService.buscarTipoUsuarioPorId(id)
-                    .orElseThrow(() -> new RuntimeException("Tipo de usuário não encontrado"));
-            return ResponseEntity.ok(tipoUsuario);
+            Optional<TipoUsuario> tipoUsuario = tipoUsuarioService.buscarTipoUsuarioPorId(id);
+            if (tipoUsuario.isPresent()) {
+                return ResponseEntity.ok(tipoUsuario.get());
+            } else {
+                return ResponseEntity.status(404)
+                        .body("Tipo de usuário não encontrado com o ID: " + id);
+            }
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -56,13 +61,9 @@ public class TipoUsuarioController {
     public ResponseEntity<?> atualizarTipoUsuario(@PathVariable Long id,
             @RequestBody TipoUsuario tipoUsuario) {
         try {
-            TipoUsuario tipoUsuarioAtualizado = tipoUsuarioService.buscarTipoUsuarioPorId(id)
-                    .orElseThrow(() -> new RuntimeException("Tipo de usuário não encontrado"));
-            tipoUsuarioAtualizado.setNome(tipoUsuario.getNome());
-            tipoUsuarioAtualizado.setDescricao(tipoUsuario.getDescricao());
-            tipoUsuarioService.atualizarTipoUsuario(tipoUsuarioAtualizado);
-            return ResponseEntity.ok(tipoUsuarioAtualizado);
-        } catch (Exception e) {
+            TipoUsuario tipoAtualizado = tipoUsuarioService.atualizarTipoUsuario(id, tipoUsuario);
+            return ResponseEntity.ok(tipoAtualizado);
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -71,8 +72,8 @@ public class TipoUsuarioController {
     public ResponseEntity<?> deletarTipoUsuario(@PathVariable Long id) {
         try {
             tipoUsuarioService.deletarTipoUsuario(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
