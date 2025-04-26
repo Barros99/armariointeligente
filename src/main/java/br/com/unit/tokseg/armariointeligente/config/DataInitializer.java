@@ -41,15 +41,11 @@ public class DataInitializer {
                 funcionario.setDescricao("Funcionário da empresa com acesso intermediário");
                 funcionario = tipoUsuarioRepository.save(funcionario);
 
-                TipoUsuario gerente = new TipoUsuario();
-                gerente.setNome("Gerente");
-                gerente.setDescricao("Gerente com acesso administrativo ao sistema");
-                gerente = tipoUsuarioRepository.save(gerente);
+                TipoUsuario entregador = new TipoUsuario();
+                entregador.setNome("Entregador");
+                entregador.setDescricao("Entregador com acesso administrativo ao sistema");
+                entregador = tipoUsuarioRepository.save(entregador);
 
-                TipoUsuario tecnico = new TipoUsuario();
-                tecnico.setNome("Técnico");
-                tecnico.setDescricao("Técnico responsável pela manutenção dos equipamentos");
-                tecnico = tipoUsuarioRepository.save(tecnico);
 
                 System.out.println("Tipos de usuário criados com sucesso!");
 
@@ -74,31 +70,15 @@ public class DataInitializer {
                     usuarioRepository.save(clienteUser);
 
                     // Usuário Funcionário
-                    Usuario funcionarioUser = new Usuario();
-                    funcionarioUser.setNome("Maria Oliveira");
-                    funcionarioUser.setEmail("maria.oliveira@exemplo.com");
-                    funcionarioUser.setSenha("senha456");
-                    funcionarioUser.setTelefone("(81) 97777-2222");
-                    funcionarioUser.setTipoUsuario(funcionario);
-                    usuarioRepository.save(funcionarioUser);
+                    Usuario entregadorUser = new Usuario();
+                    entregadorUser.setNome("Maria Oliveira");
+                    entregadorUser.setEmail("maria.oliveira@exemplo.com");
+                    entregadorUser.setSenha("senha456");
+                    entregadorUser.setTelefone("(81) 97777-2222");
+                    entregadorUser.setTipoUsuario(entregador);
+                    usuarioRepository.save(entregadorUser);
 
-                    // Usuário Gerente
-                    Usuario gerenteUser = new Usuario();
-                    gerenteUser.setNome("Carlos Pereira");
-                    gerenteUser.setEmail("carlos.pereira@exemplo.com");
-                    gerenteUser.setSenha("senha789");
-                    gerenteUser.setTelefone("(81) 96666-3333");
-                    gerenteUser.setTipoUsuario(gerente);
-                    usuarioRepository.save(gerenteUser);
 
-                    // Usuário Técnico
-                    Usuario tecnicoUser = new Usuario();
-                    tecnicoUser.setNome("Ana Santos");
-                    tecnicoUser.setEmail("ana.santos@exemplo.com");
-                    tecnicoUser.setSenha("senha101112");
-                    tecnicoUser.setTelefone("(81) 95555-4444");
-                    tecnicoUser.setTipoUsuario(tecnico);
-                    usuarioRepository.save(tecnicoUser);
 
                     System.out.println("Usuários criados com sucesso!");
                 }
